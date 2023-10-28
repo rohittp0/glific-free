@@ -4,11 +4,6 @@ defmodule Glific.MixProject do
   @github_url "https://github.com/glific/glific/"
   @home_url "https://glific.io"
   @test_envs [:test, :test_full]
-  @oban_envs [:prod, :dev] ++ @test_envs
-  # comment above line
-  # if you don't have Oban pro license, this is your best hack
-  # uncomment below line
-  # @oban_envs [:prod]
 
   def project do
     [
@@ -116,8 +111,6 @@ defmodule Glific.MixProject do
       {:hackney, "~> 1.17"},
       {:tesla, "~> 1.5"},
       {:oban, "~> 2.13"},
-      {:oban_web, "~> 2.9", repo: "oban", only: @oban_envs},
-      {:oban_pro, "~> 0.12", repo: "oban", only: @oban_envs},
       {:faker, "~> 0.13"},
       {:mock, "~> 0.3", only: [:dev | @test_envs]},
       {:excoveralls, "~> 0.15", only: @test_envs},

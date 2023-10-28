@@ -1,6 +1,6 @@
-ARG ELIXIR_VERSION
-ARG ERLANG_VERSION
-ARG ALPINE_VERSION
+ARG ELIXIR_VERSION=1.14.5
+ARG ERLANG_VERSION=25.3.2.7
+ARG ALPINE_VERSION=3.16.7
 
 FROM hexpm/elixir:${ELIXIR_VERSION}-erlang-${ERLANG_VERSION}-alpine-${ALPINE_VERSION}
 
@@ -16,8 +16,8 @@ ENV LANG=C.UTF-8
 # Install dependencies
 RUN apk add --no-cache --update \
     build-base git curl zsh vim inotify-tools openssl ncurses-libs npm \
-    nodejs-current~${NODE_VERSION} \
-    postgresql14-dev~${POSTGRES_VERSION}
+    nodejs-current \
+    postgresql14
 
 # Create a directory for the app code
 WORKDIR /app/glific
@@ -25,9 +25,6 @@ WORKDIR /app/glific
 # Install Hex and Rebar
 RUN mix local.hex --force && \
     mix local.rebar --force
-
-# configure hex to use oban repo
-RUN mix hex.repo add oban https://getoban.pro/repo --fetch-public-key $FP --auth-key $AUTH_KEY
 
 # Install mkcert
 RUN wget -O mkcert https://github.com/FiloSottile/mkcert/releases/download/v1.4.3/mkcert-v1.4.3-linux-amd64 && \
@@ -57,6 +54,8 @@ RUN /usr/local/bin/mkcert --install && \
     cp "`mkcert --CAROOT`/"/* priv/cert
 
 COPY mix.lock mix.exs .
+
+RUN mix hex.repo add oban https://github.com/sorentwo/oban
 
 # do the setup, break into steps for caching during debugging
 RUN mix deps.get
